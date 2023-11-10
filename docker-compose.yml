@@ -1,0 +1,52 @@
+# docker-compose.yml
+
+version: '3'
+
+services:
+
+  mysql:
+    image: mysql:5.7
+    platform: linux/x86_64 
+    environment:
+      MYSQL_ROOT_PASSWORD: password  
+      MYSQL_DATABASE: mydb
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"] 
+      timeout: 10s
+      retries: 5
+
+  provider:
+    build: 
+      context: wowai/
+    command: >
+      sh -c "python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./wowai:/app
+    ports:
+      - 8000:8000
+    env_file:
+      - ./wowai/.env
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  client:
+    build: 
+      context: client/
+    command: python manage.py runserver 0.0.0.0:8001
+    volumes:
+      - ./client:/app
+    ports:
+      - 8001:8001
+    env_file:
+      - ./client/.env
+
+volumes:
+  mysql-data:
