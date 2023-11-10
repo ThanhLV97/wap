@@ -13,6 +13,26 @@ This project implements a REST API for models, data ingestion, and actions using
 - GRPC for action api
 - Integrate Oauth server and create client for testing
 
+## Folder structure
+
+├── README.md
+├── client - oauth client for testing server
+│   ├── Dockerfile
+│   ├── client
+│   ├── db.sqlite3
+│   ├── manage.py
+│   └── requirements.txt
+├── docker-compose.yml
+└── wowai
+    ├── Dockerfile
+    ├── apis
+    ├── core
+    ├── db.sqlite3
+    ├── manage.py
+    ├── requirements.txt
+    ├── venv
+    └── wowai - application for all sevices
+
 ## Usage
 
 ### Environment Setup
