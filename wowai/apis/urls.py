@@ -1,7 +1,8 @@
 from django.urls import path
 
 from .views import (ActionDetailViewSet, ActionViewSet, DataIngestionDetail,
-                    DataIngestionList, ModelDetailViewSet, ModelViewSet)
+                    DataIngestionList, FilesViewSet, FileUploadView,
+                    FileUploadViewSet, ModelDetailViewSet, ModelViewSet)
 
 urlpatterns = [
 
@@ -13,5 +14,9 @@ urlpatterns = [
 
     path('actions/', ActionViewSet.as_view()),
     path('actions/<int:pk>/', ActionDetailViewSet.as_view()),
+
+    path('upload/', FileUploadViewSet.as_view(), name='upload'),
+    path('files/<str:filename>/', FilesViewSet.as_view(), name='files'),
+    path('files/', FileUploadView.as_view(), name='files')
 
 ]

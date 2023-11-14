@@ -13,6 +13,11 @@ class Model(BaseModel):
         return self.name
 
 
+class UploadedFile(BaseModel):
+    title = models.CharField(max_length=100)
+    file = models.FileField(upload_to='uploads/')
+
+
 class DataIngestion(BaseModel):
     name = models.CharField(max_length=255)
     description = models.TextField()
