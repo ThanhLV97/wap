@@ -4,9 +4,9 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Action, DataIngestion, Model
+from .models import Action, DataIngestion, Model, UploadedFile
 from .serializers import (ActionSerializer, DataIngestionSerializer,
-                          ModelSerializer)
+                          ModelSerializer, UploadedFileSerializer)
 
 
 class ModelViewSet(APIView):
@@ -18,9 +18,11 @@ class ModelViewSet(APIView):
 
     def post(self, request):
         serializer = ModelSerializer(data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ModelDetailViewSet(APIView):
@@ -39,9 +41,11 @@ class ModelDetailViewSet(APIView):
     def put(self, request, pk):
         model = self.get_object(pk)
         serializer = ModelSerializer(model, data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
@@ -60,9 +64,11 @@ class DataIngestionList(APIView):
 
     def post(self, request):
         serializer = DataIngestionSerializer(data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -82,9 +88,11 @@ class DataIngestionDetail(APIView):
     def put(self, request, pk):
         file = self.get_object(pk)
         serializer = DataIngestionSerializer(file, data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
@@ -103,9 +111,11 @@ class ActionViewSet(APIView):
 
     def post(self, request):
         serializer = ActionSerializer(data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -119,9 +129,11 @@ class ActionDetailViewSet(APIView):
     def put(self, request, pk):
         action = self.get_object(pk)
         serializer = ActionSerializer(action, data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
@@ -129,3 +141,39 @@ class ActionDetailViewSet(APIView):
         action.is_deleted = True
         action.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class FileUploadViewSet(APIView):
+
+    def post(self, request):
+        files = request.FILES.getlist('files')
+        serializers = []
+
+        for file in files:
+            title = file.name
+            upload = UploadedFile(title=title, file=file)
+            upload.save()
+            serializers.append(UploadedFileSerializer(upload).data)
+
+        return Response( {"data": serializers}, content_type='application/rdf+xml')
+
+
+class FilesViewSet(APIView):
+
+    def get(self, request, filename):
+
+        uploads = UploadedFile.objects.filter(title=filename)
+
+        if not uploads:
+            raise Http404("No files found")
+
+        serializer = UploadedFileSerializer(uploads, many=True)
+        return Response(serializer.data)
+
+
+class FileUploadView(APIView):
+
+    def get(self, request):
+        files = UploadedFile.objects.all()
+        serializer = UploadedFileSerializer(files, many=True)
+        return Response(serializer.data)

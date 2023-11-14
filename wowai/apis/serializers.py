@@ -1,7 +1,7 @@
 # Serializers
 from rest_framework import serializers
 
-from .models import Action, DataIngestion, Model
+from .models import Action, DataIngestion, Model, UploadedFile
 
 
 class ModelSerializer(serializers.ModelSerializer):
@@ -23,3 +23,10 @@ class ActionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Action
         fields = ['id', 'name', 'description', 'updated_at']
+
+
+class UploadedFileSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UploadedFile
+        fields = ['id', 'title', 'file', 'created_at', 'updated_at']
