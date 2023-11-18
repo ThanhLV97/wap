@@ -1,7 +1,7 @@
 # Serializers
 from rest_framework import serializers
 
-from .models import Action, DataIngestion, Model, UploadedFile
+from .models import Action, CustomUser, DataIngestion, Model, UploadedFile
 
 
 class ModelSerializer(serializers.ModelSerializer):
@@ -30,3 +30,9 @@ class UploadedFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UploadedFile
         fields = ['id', 'title', 'file', 'created_at', 'updated_at']
+
+class CustomUserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'email', 'is_active']
