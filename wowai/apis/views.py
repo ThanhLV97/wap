@@ -3,10 +3,13 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import Action, DataIngestion, Model, UploadedFile
-from .serializers import (ActionSerializer, DataIngestionSerializer,
-                          ModelSerializer, UploadedFileSerializer)
+from .models import Action, CustomUser, DataIngestion, Model, UploadedFile
+from .serializers import (ActionSerializer, CustomUserSerializer,
+                          DataIngestionSerializer, ModelSerializer,
+                          UploadedFileSerializer)
 
 
 class ModelViewSet(APIView):
@@ -177,3 +180,32 @@ class FileUploadView(APIView):
         files = UploadedFile.objects.all()
         serializer = UploadedFileSerializer(files, many=True)
         return Response(serializer.data)
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token['username'] = user.username
+        return token
+
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+
+class RegiterUser(APIView):
+    """Register service."""
+    def post(self, request):
+        data = request.data
+        try:
+            user = CustomUser.objects.create_user(
+                email=data['email'],
+                password=data['password']
+            )
+            serializer = CustomUserSerializer(user, many=False)
+            return Response(serializer.data)
+
+        except Exception as e:
+            message = {'detail': 'Profile with this username already exists'}
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
