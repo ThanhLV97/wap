@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package wowai.apis;
+
+import "google/protobuf/empty.proto";
+
+service AuthenController {
+    rpc Create(AuthRequest) returns (AuthResponse) {}
+}
+
+service CustomUserController {
+    rpc Create(CustomUserRequest) returns (CustomUserResponse) {}
+    rpc Destroy(CustomUserDestroyRequest) returns (google.protobuf.Empty) {}
+    rpc List(CustomUserListRequest) returns (CustomUserListResponse) {}
+    rpc PartialUpdate(CustomUserPartialUpdateRequest) returns (CustomUserResponse) {}
+    rpc Retrieve(CustomUserRetrieveRequest) returns (CustomUserResponse) {}
+    rpc Update(CustomUserRequest) returns (CustomUserResponse) {}
+}
+
+message AuthRequest {
+    string email = 2;
+    string password = 3;
+}
+
+message AuthResponse {
+    string token = 1;
+    string status = 2;
+}
+
+message CustomUserDestroyRequest {
+    int32 id = 1;
+}
+
+message CustomUserListRequest {
+}
+
+message CustomUserListResponse {
+    repeated CustomUserResponse results = 1;
+}
+
+message CustomUserPartialUpdateRequest {
+    int32 id = 1;
+    string email = 2;
+    bool is_active = 3;
+    repeated string _partial_update_fields = 4;
+}
+
+message CustomUserRequest {
+    int32 id = 1;
+    string email = 2;
+    bool is_active = 3;
+}
+
+message CustomUserResponse {
+    int32 id = 1;
+    string email = 3;
+    bool is_active = 4;
+}
+
+message CustomUserRetrieveRequest {
+    int32 id = 1;
+}
+
