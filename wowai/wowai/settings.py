@@ -30,7 +30,6 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'apis.CustomUser'
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,7 +41,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apis',
     'rest_framework',
+    'django_socio_grpc',
+
 ]
+
+GRPC_FRAMEWORK = {
+    "ROOT_HANDLERS_HOOK" : 'apis.handlers.grpc_handlers'
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -85,7 +90,7 @@ DATABASES = {
         'NAME': 'mydb',   
         'USER': 'root',   
         'PASSWORD': 'password',   
-        'HOST': 'mysql',   
+        'HOST': '0.0.0.0',   
         'PORT': '3306',            
     }
 }
@@ -167,3 +172,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+TOKEN_EXPIRATION = 24 * 30
+JWT_SECRET = '604194d2-5385-4ff1-b1dd-cd75cb6fb3f3'
