@@ -4,6 +4,15 @@ package wowai.apis;
 
 import "google/protobuf/empty.proto";
 
+service ActionController {
+    rpc Create(ActionRequest) returns (ActionResponse) {}
+    rpc Destroy(ActionDestroyRequest) returns (google.protobuf.Empty) {}
+    rpc List(ActionListRequest) returns (ActionListResponse) {}
+    rpc PartialUpdate(ActionPartialUpdateRequest) returns (ActionResponse) {}
+    rpc Retrieve(ActionRetrieveRequest) returns (ActionResponse) {}
+    rpc Update(ActionRequest) returns (ActionResponse) {}
+}
+
 service AuthenController {
     rpc Create(AuthRequest) returns (AuthResponse) {}
 }
@@ -15,6 +24,43 @@ service CustomUserController {
     rpc PartialUpdate(CustomUserPartialUpdateRequest) returns (CustomUserResponse) {}
     rpc Retrieve(CustomUserRetrieveRequest) returns (CustomUserResponse) {}
     rpc Update(CustomUserRequest) returns (CustomUserResponse) {}
+}
+
+message ActionDestroyRequest {
+    int32 id = 1;
+}
+
+message ActionListRequest {
+}
+
+message ActionListResponse {
+    repeated ActionResponse results = 1;
+}
+
+message ActionPartialUpdateRequest {
+    int32 id = 1;
+    string action_type = 2;
+    string status = 3;
+    repeated string _partial_update_fields = 4;
+    int32 model_id = 5;
+}
+
+message ActionRequest {
+    int32 id = 1;
+    string action_type = 2;
+    string status = 3;
+    int32 model_id = 4;
+}
+
+message ActionResponse {
+    int32 id = 1;
+    string action_type = 3;
+    string status = 4;
+    int32 model_id = 5;
+}
+
+message ActionRetrieveRequest {
+    int32 id = 1;
 }
 
 message AuthRequest {

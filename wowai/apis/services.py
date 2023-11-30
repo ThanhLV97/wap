@@ -9,8 +9,8 @@ from django_socio_grpc import generics
 import apis.grpc.apis_pb2 as apis_pb2
 from wowai.settings import JWT_SECRET, TOKEN_EXPIRATION
 
-from .grpc_serializers import AuthProtoSerializer, CustomUserProtoSerializer
-from .models import CustomUser
+from .grpc_serializers import AuthProtoSerializer, CustomUserProtoSerializer, ActionProtoSerializer
+from .models import CustomUser, Action
 
 ########################################################################################################################
 #                                                 USER SERVICE
@@ -65,3 +65,12 @@ def generate_token(user):
     }
 
     return jwt.encode(payload, JWT_SECRET, algorithm='HS256')
+
+
+########################################################################################################################
+#                                                 ACTION SERVICE
+########################################################################################################################
+
+class ActionService(generics.AsyncModelService):
+    queryset = Action.objects.all()
+    serializer_class = ActionProtoSerializer
