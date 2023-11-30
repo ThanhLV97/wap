@@ -19,13 +19,6 @@ class DataIngestionProtoSerializer(proto_serializers.ModelProtoSerializer):
         fields = ['id', 'name', 'file', 'description', 'uploaded_at']
 
 
-class ActionProtoSerializer(proto_serializers.ModelProtoSerializer):
-
-    class Meta:
-        model = Action
-        fields = ['id', 'name', 'description', 'updated_at']
-
-
 class UploadedFileProtoSerializer(proto_serializers.ModelProtoSerializer):
 
     class Meta:
@@ -54,3 +47,13 @@ class AuthProtoSerializer(proto_serializers.ProtoSerializer):
         proto_class = apis_pb2.AuthRequest
         proto_class_list = apis_pb2.AuthResponse
 
+
+class ActionProtoSerializer(proto_serializers.ModelProtoSerializer):
+    model_id = serializers.IntegerField()
+
+    class Meta:
+        model = Action
+        proto_class = apis_pb2.ActionRequest
+        proto_class_list = apis_pb2.ActionListResponse # Modification here
+
+        fields = ['id', 'model_id', 'action_type', 'status']
